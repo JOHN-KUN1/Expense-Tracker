@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val itemRemoved = adapter.getItemAtPostition(viewHolder.adapterPosition)
-                val itemPosition = viewHolder.adapterPosition
                 viewModel.Delete(adapter.getItemAtPostition(viewHolder.adapterPosition))
 
                 Snackbar.make(mainBinding.main,"Your Item has been deleted!",Snackbar.LENGTH_LONG)

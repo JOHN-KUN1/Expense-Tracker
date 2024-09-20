@@ -19,7 +19,6 @@ class UpdateActivity : AppCompatActivity() {
 
     lateinit var updateBinding : ActivityUpdateBinding
     lateinit var viewModel : MyViewModel
-    lateinit var transactionsViewModel: TotalTransactionsViewModel
 
     var userPreviousAmount : Int = 0
     var userNewAmount : Int = 0
@@ -86,7 +85,7 @@ class UpdateActivity : AppCompatActivity() {
     fun updateTotalBalance(){
 
         val app = application as MyApplication
-        transactionsViewModel = ViewModelProvider(app.viewModelStore,ViewModelProvider.NewInstanceFactory()).get(TotalTransactionsViewModel::class.java)
+        val transactionsViewModel = ViewModelProvider(app.viewModelStore,ViewModelProvider.NewInstanceFactory()).get(TotalTransactionsViewModel::class.java)
         val newAmount = userPreviousAmount - userNewAmount
         transactionsViewModel.decreaseBalance(newAmount)
 
@@ -94,8 +93,10 @@ class UpdateActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        val app = application as MyApplication
         val sharedPreference = this.getSharedPreferences("shared_pref", Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
+        val transactionsViewModel = ViewModelProvider(app.viewModelStore,ViewModelProvider.NewInstanceFactory()).get(TotalTransactionsViewModel::class.java)
 
         transactionsViewModel.totalBalance.value?.let { editor.putInt("total_balance",it) }
         editor.apply()
