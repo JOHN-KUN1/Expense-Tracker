@@ -1,11 +1,16 @@
 package com.john.expensetracker.View
 
+//noinspection SuspiciousImport
+//import android.R
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
@@ -21,6 +26,8 @@ import com.john.expensetracker.ViewModel.MyViewModel
 import com.john.expensetracker.ViewModel.TotalTransactionsViewModel
 import com.john.expensetracker.ViewModel.TrackerViewModelFactory
 import com.john.expensetracker.databinding.ActivityMainBinding
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,8 +57,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val itemRemoved = adapter.getItemAtPostition(viewHolder.adapterPosition)
-                viewModel.Delete(adapter.getItemAtPostition(viewHolder.adapterPosition))
+                val itemRemoved = adapter.getItemAtPostition(viewHolder.absoluteAdapterPosition)
+                viewModel.Delete(adapter.getItemAtPostition(viewHolder.absoluteAdapterPosition))
 
                 Snackbar.make(mainBinding.main,"Your Item has been deleted!",Snackbar.LENGTH_LONG)
                     .setAction("UNDO", View.OnClickListener {
@@ -59,6 +66,34 @@ class MainActivity : AppCompatActivity() {
                     }).show()
 
 
+            }
+
+            override fun onChildDraw(c: Canvas,recyclerView: RecyclerView,viewHolder: RecyclerView.ViewHolder,dX: Float,dY: Float,actionState: Int,isCurrentlyActive: Boolean) {
+
+                RecyclerViewSwipeDecorator.Builder(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+                    .addSwipeRightActionIcon(R.drawable.delete_icon)
+                    .addSwipeRightBackgroundColor(Color.RED)
+                    .addSwipeLeftActionIcon(R.drawable.delete_icon)
+                    .addSwipeLeftBackgroundColor(Color.RED)
+                    .create()
+                    .decorate()
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
             }
 
         }).attachToRecyclerView(mainBinding.recyclerView)
